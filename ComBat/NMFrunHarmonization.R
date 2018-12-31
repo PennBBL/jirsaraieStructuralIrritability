@@ -1,5 +1,5 @@
 ###################################################################################################
-##########################        GRMPY - Combat Longitudinal Data       ##########################
+##########################         GRMPY - Combat Harmonization          ##########################
 ##########################               Robert Jirsaraie                ##########################
 ##########################        rjirsara@pennmedicine.upenn.edu        ##########################
 ##########################                 04/22/2018                    ##########################
@@ -33,6 +33,7 @@ colnames(TP1ct)=TP1ct[2,]
 TP1ct= TP1ct[-2, ]
 TP1ct= TP1ct[-1, ]
 
+
 TP2ct<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Nmf24BasesCT_TP2.csv")
 TP2ct=t(TP2ct)
 colnames(TP2ct)=TP2ct[2,]
@@ -56,7 +57,7 @@ batch[141:281] <- 2
 
 TP2rds<-readRDS("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 TP2rds<-TP2rds[order(TP2rds$bblid),]
-myvars2 <- c("bblid","scanid","ScanAgeYears","sex")
+myvars2 <- c("bblid","scanid","ScanAgeYears", "sex","ari_log")
 TP2rds <- TP2rds[myvars2]
 
 TP1rds<-readRDS("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/baseline/n140_Demo+Psych+DX+QA_20180531.rds")
@@ -64,6 +65,26 @@ TP1rds<-TP1rds[order(TP1rds$bblid),]
 myvars1 <- c("bblid","scanid","ageAtScan1", "sex")
 TP1rds <- TP1rds[myvars1]
 colnames(TP1rds)[3] <- "ScanAgeYears"
+
+####################################################################################
+##### Add ARI log to the TP1 dataset to Control for When Harmonizing Timepoints ####
+####################################################################################
+
+PSYCH<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/BBLSelfreportAndStat_DATA_2018-06-02_2153.csv")
+PSYCH<-PSYCH[which(PSYCH$bblid %in% TP1rds$bblid),]
+PSYCH<-PSYCH[ which(PSYCH$bbl_protocol %in% "GRMPY"),]
+PSYCH<-PSYCH[complete.cases(PSYCH[,c(14:19)]),]
+PSYCH[PSYCH ==-9999] <- NA
+
+ari<-PSYCH[,c(grep('ari_[0-9]', colnames(PSYCH)))]
+ari<-cbind(PSYCH$bblid,ari)
+ari<-ari[1:7]
+ari$ari_total<-rowSums(ari[2:7]) #ARI Summary Score
+ari$ari_log <- log(ari$ari_total+1) #Apply Log Transform of ARI to correct skewness
+ari<-ari[,-c(2:8)]
+names(ari)[1]<-'bblid'
+
+TP1rds <- merge(TP1rds,ari,by=c("bblid"))
 
 ###########################################################################################
 ##### Reformat the Datasets and Select Only Those Varaibles of Interest Then Combine  #####
@@ -84,8 +105,9 @@ combinedRDS<-combinedRDS[,order(colnames(combinedRDS))]
 
 age<-as.numeric(c(combinedRDS[1,]))
 sex<-as.factor(c(combinedRDS[2,]))
+ari_log<-as.numeric(c(combinedRDS[3,]))
 
-mod <- model.matrix(~age+sex)
+mod <- model.matrix(~age+sex+ari_log)
 
 ############################################
 ##### Final Call to Harmonize the Data #####
