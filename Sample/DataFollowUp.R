@@ -26,9 +26,10 @@ library(car)
 ##### Prepare the Demographics #####
 ####################################
 
-DEMO<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/demographics_20180409.csv")
+DEMO<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/demographics_20180824.csv")
 DEMO<-DEMO[which(DEMO$bblid %in% subs$bblid),]
-DEMO<-DEMO[,-c(1,3,4,8)]
+DEMO<-DEMO[,c('bblid','enrollagemonths','sex','race','hand','height','weight','educ','mom_educ','dad_educ')]
+DEMO$enrollagemonths<-DEMO$enrollagemonths/12
 names(DEMO)[2]<-'ScanAgeYears'
 
 ###########################################################
@@ -178,7 +179,7 @@ rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
 rds <- merge(rds,DX,by=c("bblid"))
-rds<-rds[,c(1,18,2:17,19:47)]
+rds<-rds[,c(1,17,2:16,18:46)]
 
 #############################################################################
 ##### Conduct Factor Analysis to Compute General Psychopathology Scores #####
@@ -195,14 +196,14 @@ factor<-factanal(x=dimensions[,2:5], factors=1, rotation='varimax', scores="regr
 dimensions$Factor1<-factor$scores
 dimensions<-dimensions[,c(1,6)]
 rds<-merge(rds,dimensions, by=c('bblid'))
-names(rds)[48]<-'GenPsycho'
+names(rds)[47]<-'GenPsycho'
 
 #################################
 ##### Write Out New Dataset #####
 #################################
 
-rds[,c(4:6,13:18,20,32:47)] <- lapply(rds[,c(4:6,13:18,20,32:47)], as.factor)
-rds[,c(7:12,19,21:31,48)] <- lapply(rds[,c(7:12,19,21:31,48)], as.numeric)
+rds[,c(4:6,13:18,20,32:46)] <- lapply(rds[,c(4:6,13:18,20,32:46)], as.factor)
+rds[,c(3,7:11,18,20:30,47)] <- lapply(rds[,c(3,7:11,18,20:30,47)], as.numeric)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 
