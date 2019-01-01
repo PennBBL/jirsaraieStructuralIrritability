@@ -30,17 +30,6 @@ dim(Resilient)
 Emerge <- rds[which(rds$TP1_goassessSmryNCvsDX ==0 & rds$TP2_dx_NCvsDX == 1),]
 dim(Emerge)
 
-##############################################
-### Create New Variable of Diagnosis Group ###
-##############################################
-
-rds$DiagnosisGroup<-0
-rds[which(rds$TP1_goassessSmryNCvsDX ==0 & rds$TP2_dx_NCvsDX ==0),88]<-1 #NC
-rds[which(rds$TP1_goassessSmryNCvsDX ==1 & rds$TP2_dx_NCvsDX ==1),88]<-2 #DX
-rds[which(rds$TP1_goassessSmryNCvsDX ==1 & rds$TP2_dx_NCvsDX ==0),88]<-3 #Resilient
-rds[which(rds$TP1_goassessSmryNCvsDX ==0 & rds$TP2_dx_NCvsDX ==1),88]<-4 #Emergent
-rds$DiagnosisGroup<-as.factor(rds$DiagnosisGroup)
-
 ###########################################
 ### Aanlyze Differences in Baseline Age ###
 ###########################################
@@ -54,8 +43,8 @@ sd(Resilient$TP1_ageAtScan1)
 summary(Emerge$TP1_ageAtScan1)
 sd(Emerge$TP1_ageAtScan1)
 
-summary(aov(rds$TP1_ageAtScan1~rds$DiagnosisGroup)) #0.15
-etaSquared(aov(rds$TP1_ageAtScan1~rds$DiagnosisGroup)) #0.04
+summary(aov(rds$TP1_ageAtScan1~rds$DeltaDiagnosisGroup)) #0.15
+etaSquared(aov(rds$TP1_ageAtScan1~rds$DeltaDiagnosisGroup)) #0.04
 
 ############################################
 ### Aanlyze Differences in Follow Up Age ###
@@ -70,8 +59,8 @@ sd(Resilient$TP2_ScanAgeYears)
 summary(Emerge$TP2_ScanAgeYears)
 sd(Emerge$TP2_ScanAgeYears)
 
-summary(aov(rds$TP2_ScanAgeYears~rds$DiagnosisGroup)) #0.04
-etaSquared(aov(rds$TP2_ScanAgeYears~rds$DiagnosisGroup)) #0.06
+summary(aov(rds$TP2_ScanAgeYears~rds$DeltaDiagnosisGroup)) #0.04
+etaSquared(aov(rds$TP2_ScanAgeYears~rds$DeltaDiagnosisGroup)) #0.06
 
 ############################################
 ### Aanlyze Differences in Sex per Group ###
@@ -82,7 +71,7 @@ summary(DX$TP2_sex)
 summary(Resilient$TP2_sex)
 summary(Emerge$TP2_sex)
 
-chisq.test(table(rds$DiagnosisGroup,rds$TP2_sex)) #0.29
+chisq.test(table(rds$DeltaDiagnosisGroup,rds$TP2_sex)) #0.29
 
 ###############################################
 ### Aanlyze Differences in Father Education ###
@@ -97,8 +86,8 @@ sd(Resilient$TP2_dad_educ, na.rm=TRUE)
 summary(Emerge$TP2_dad_educ)
 sd(Emerge$TP2_dad_educ, na.rm=TRUE)
 
-summary(aov(rds$TP2_dad_educ~rds$DiagnosisGroup)) #0.25
-etaSquared(aov(rds$TP2_dad_educ~rds$DiagnosisGroup)) #0.03
+summary(aov(rds$TP2_dad_educ~rds$DeltaDiagnosisGroup)) #0.25
+etaSquared(aov(rds$TP2_dad_educ~rds$DeltaDiagnosisGroup)) #0.03
 
 ###############################################
 ### Aanlyze Differences in Mother Education ###
@@ -113,8 +102,8 @@ sd(Resilient$TP2_mom_educ, na.rm=TRUE)
 summary(Emerge$TP2_mom_educ)
 sd(Emerge$TP2_mom_educ, na.rm=TRUE)
 
-summary(aov(rds$TP2_mom_educ~rds$DiagnosisGroup)) #0.03
-etaSquared(aov(rds$TP2_mom_educ~rds$DiagnosisGroup)) #0.07
+summary(aov(rds$TP2_mom_educ~rds$DeltaDiagnosisGroup)) #0.03
+etaSquared(aov(rds$TP2_mom_educ~rds$DeltaDiagnosisGroup)) #0.07
 
 ####################################################
 ### Aanlyze Differences in Baseline Irritability ###
@@ -129,8 +118,8 @@ sd(Resilient$TP1_IrritabilitySum, na.rm=TRUE)
 summary(Emerge$TP1_IrritabilitySum)
 sd(Emerge$TP1_IrritabilitySum, na.rm=TRUE)
 
-summary(aov(rds$TP1_IrritabilitySum~rds$DiagnosisGroup)) #<0.0001
-etaSquared(aov(rds$TP1_IrritabilitySum~rds$DiagnosisGroup)) #0.35
+summary(aov(rds$TP1_IrritabilitySum~rds$DeltaDiagnosisGroup)) #<0.0001
+etaSquared(aov(rds$TP1_IrritabilitySum~rds$DeltaDiagnosisGroup)) #0.35
 
 ####################################################
 ### Aanlyze Differences in Followup Irritability ###
@@ -145,8 +134,8 @@ sd(Resilient$TP2_ari_total, na.rm=TRUE)
 summary(Emerge$TP2_ari_total)
 sd(Emerge$TP2_ari_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_ari_total~rds$DiagnosisGroup)) #0.06
-etaSquared(aov(rds$TP2_ari_total~rds$DiagnosisGroup)) #0.05
+summary(aov(rds$TP2_ari_total~rds$DeltaDiagnosisGroup)) #0.06
+etaSquared(aov(rds$TP2_ari_total~rds$DeltaDiagnosisGroup)) #0.05
 
 ##################################################
 ### Aanlyze Differences in Followup Depression ###
@@ -161,8 +150,8 @@ sd(Resilient$TP2_bdi_total, na.rm=TRUE)
 summary(Emerge$TP2_bdi_total)
 sd(Emerge$TP2_bdi_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_bdi_total~rds$DiagnosisGroup)) #<0.0001
-etaSquared(aov(rds$TP2_bdi_total~rds$DiagnosisGroup)) #0.08
+summary(aov(rds$TP2_bdi_total~rds$DeltaDiagnosisGroup)) #<0.0001
+etaSquared(aov(rds$TP2_bdi_total~rds$DeltaDiagnosisGroup)) #0.08
 
 #####################################################
 ### Aanlyze Differences in Followup ADHD Symptoms ###
@@ -177,8 +166,8 @@ sd(Resilient$TP2_adhd_total, na.rm=TRUE)
 summary(Emerge$TP2_adhd_total)
 sd(Emerge$TP2_adhd_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_adhd_total~rds$DiagnosisGroup)) #0.02
-etaSquared(aov(rds$TP2_adhd_total~rds$DiagnosisGroup)) #0.07
+summary(aov(rds$TP2_adhd_total~rds$DeltaDiagnosisGroup)) #0.02
+etaSquared(aov(rds$TP2_adhd_total~rds$DeltaDiagnosisGroup)) #0.07
 
 ########################################################
 ### Aanlyze Differences in Followup Anxiety Symptoms ###
@@ -193,8 +182,24 @@ sd(Resilient$TP2_scared_total, na.rm=TRUE)
 summary(Emerge$TP2_scared_total)
 sd(Emerge$TP2_scared_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_scared_total~rds$DiagnosisGroup)) #0.02
-etaSquared(aov(rds$TP2_scared_total~rds$DiagnosisGroup)) #0.07
+summary(aov(rds$TP2_scared_total~rds$DeltaDiagnosisGroup)) #0.02
+etaSquared(aov(rds$TP2_scared_total~rds$DeltaDiagnosisGroup)) #0.07
+
+###############################################################
+### Aanlyze Differences in Followup General Psychopathology ###
+###############################################################
+
+summary(NC$TP2_GenPsycho)
+sd(NC$TP2_GenPsycho, na.rm=TRUE)
+summary(DX$TP2_GenPsycho)
+sd(DX$TP2_GenPsycho, na.rm=TRUE)
+summary(Resilient$TP2_GenPsycho)
+sd(Resilient$TP2_GenPsycho, na.rm=TRUE)
+summary(Emerge$TP2_GenPsycho)
+sd(Emerge$TP2_GenPsycho, na.rm=TRUE)
+
+summary(aov(rds$TP2_GenPsycho~rds$DeltaDiagnosisGroup)) #0.003
+etaSquared(aov(rds$TP2_GenPsycho~rds$DeltaDiagnosisGroup)) #0.10
 
 ###################################################################################################
 #####  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  #####
