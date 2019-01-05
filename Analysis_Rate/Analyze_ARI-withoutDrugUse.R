@@ -64,6 +64,7 @@ print("Loading covariates file")
 covaData<-readRDS(subjDataName) ##Read Data
 subset <- which(covaData[inclusionName] == 1) ##Find subset for analysis
 covaData <- covaData[subset, ] #subset data
+covaData<-covaData[complete.cases(covaData$TP2_drugscreen1),]
 
 ##############################################################################
 ################         Load and merge input dataset          ###############
