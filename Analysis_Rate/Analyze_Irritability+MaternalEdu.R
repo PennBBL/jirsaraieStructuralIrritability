@@ -33,7 +33,7 @@ suppressMessages(require(voxel))
 
 print("Reading Arguments")
 
-inputPath<-'/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Nmf24BasesCT_COMBAT_Rate.csv'
+inputPath<-'/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Nmf4SIGBasesCT_COMBAT_Rate.csv'
 subjDataName<-'/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Demo+Psych+DX+QA_20180531.rds'
 OutDirRoot <- '/data/jux/BBL/projects/jirsaraieStructuralIrrit/output/FINAL/longitudinal'
 
