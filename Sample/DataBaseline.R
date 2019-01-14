@@ -136,6 +136,35 @@ bdi$bdi_FOLLOWUP<-rowSums(bdi[,2:23])
 bdi<-bdi[,-c(2:23)]
 names(bdi)[1]<-'bblid'
 
+###########################################################
+##### Prepare the Data about Perscription Medications #####
+###########################################################
+
+MEDS <- read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/Medications.csv")
+MEDS<-MEDS[which(MEDS$bblid %in% subs$bblid),]
+MEDS<-MEDS[,c(1,4:5)] # Remove Visit 2 because 85 missing Values
+names(MEDS)<-c("bblid","Medications","Psychotropics")
+MEDS$MedsExclusion<-1
+CurrentUse<-which(MEDS$Psychotropics == 1)
+for (subject in CurrentUse)
+{
+MEDS[subject,4]<-MEDS[subject,4]<-0
+}
+
+###################################################################
+##### Prepare the Data on Drug Use from the Urine Drug Screen #####
+###################################################################
+
+DRUGS<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/GRMPYDataEntryInterv_DATA_2018-06-01_0118.csv")
+DRUGS<-DRUGS[which(DRUGS$bblid %in% subs$bblid),]
+DRUGS<-DRUGS[,1:3] 
+DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('unk')=NA")
+DRUGS$DrugsExclusion<-1
+CurrentUse<-which(DRUGS$drugscreen1 == 1)
+for (subject in CurrentUse)
+{
+DRUGS[subject,4]<-DRUGS[subject,4]<-0
+}
 ####################################################
 ##### Merge the Prepared Spreadsheets Together #####
 ####################################################
@@ -148,6 +177,8 @@ rds <- merge(rds,swan,by=c("bblid"))
 rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
+rds <- merge(rds,MEDS,by=c("bblid"))
+rds <- merge(rds,DRUGS,by=c("bblid"))
 
 ################################################################
 ##### Reclassify Variable Types and Save Final Spreadsheet #####
