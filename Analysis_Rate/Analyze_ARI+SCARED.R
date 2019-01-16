@@ -37,7 +37,7 @@ inputPath<-'/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/l
 subjDataName<-'/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Demo+Psych+DX+QA_20180531.rds'
 OutDirRoot <- '/data/jux/BBL/projects/jirsaraieStructuralIrrit/output/FINAL/longitudinal'
 
-covsFormula <- "~s(TP1_ageAtScan1,k=4)+TP2_sex+DeltaQA+TP2_ari_log+TP2_mom_educ"
+covsFormula <- "~s(TP1_ageAtScan1,k=4)+TP2_sex+DeltaQA+TP2_ari_log+TP2_scared_total"
 
 ##############################################################################
 ################              Adjust Parameters               ################
