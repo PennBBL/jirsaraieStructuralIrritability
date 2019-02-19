@@ -65,7 +65,6 @@ DX[vars]<-ifelse(DX[vars] <= 3, 0, ifelse(DX[vars] == 4, 1, 3))
 }
 DX$goassessSmryPsychOverallRtg<-NULL
 DX$goassessSmryPrimePos2<-NULL
-DX$goassessSmry<-NULL
 DX$goassessSmryPrimePos1<-NULL
 DX$goassessSmryPrimeTot<-NULL
 DX$goassessSmryHalTh<-NULL
