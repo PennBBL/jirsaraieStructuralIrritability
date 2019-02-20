@@ -92,8 +92,8 @@ sd(NC$TP2_ari_total, na.rm=TRUE)
 summary(DX$TP2_ari_total)
 sd(DX$TP2_ari_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_ari_total~rds$TP1_goassessSmryNCvsDX)) #0.18
-cohen.d(rds$TP2_ari_total, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.23
+summary(aov(rds$TP2_ari_log~rds$TP1_goassessSmryNCvsDX)) #0.04
+cohen.d(rds$TP2_ari_log, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.38
 
 ###################################################
 ### Aanlyze Differences in Follow-up Depression ###
