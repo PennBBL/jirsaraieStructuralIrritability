@@ -53,8 +53,13 @@ MEDS[subject,4]<-MEDS[subject,4]<-0
 
 DRUGS<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/imglook_20180622.csv")
 DRUGS<-DRUGS[which(DRUGS$bblid %in% subs$bblid),]
-DRUGS<-DRUGS[,1:3] 
-DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('unk')=NA")
+DRUGS<-DRUGS[,c(1,7,9)]
+DRUGS<-unique(DRUGS[,1:3])
+colnames(DRUGS) <- c("bblid","drugscreen1","poscreenexpl1")
+DRUGS$drugscreen1<-as.numeric(DRUGS$drugscreen1)
+DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('1')=NA")
+DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('2')=0")
+DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('3')=1")
 DRUGS$DrugsExclusion<-1
 CurrentUse<-which(DRUGS$drugscreen1 == 1)
 for (subject in CurrentUse)
