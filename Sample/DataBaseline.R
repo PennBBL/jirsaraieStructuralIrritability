@@ -65,6 +65,7 @@ DX[vars]<-ifelse(DX[vars] <= 3, 0, ifelse(DX[vars] == 4, 1, 3))
 }
 DX$goassessSmryPsychOverallRtg<-NULL
 DX$goassessSmryPrimePos2<-NULL
+DX$goassessSmry<-NULL
 DX$goassessSmryPrimePos1<-NULL
 DX$goassessSmryPrimeTot<-NULL
 DX$goassessSmryHalTh<-NULL
@@ -74,14 +75,16 @@ DX$goassessSmryHalAs<-NULL
 DX$goassessSmryHalAv<-NULL
 DX$goassessSmryHal<-NULL
 DX$goassessSmryDel<-NULL
-DX$goassessSmryEat<-NULL
 DX$goassessSmryBul<-NULL
 DX$goassessSmryAno<-NULL
+DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryCon','goassessSmryOdd','goassessSmryEat')]) #Merge Bipolar Disorders
+DX$goassessSmryOTHER[DX$goassessSmryOTHER>=1] <- 1
 DX$goassessSmryOdd<-NULL
 DX$goassessSmryCon<-NULL
-DX$goassessSmrySum<-rowSums(DX[,c(4:6,14,15,17)]) #Calculate Summary Variable
+DX$goassessSmryEat<-NULL
+DX$goassessSmrySum<-rowSums(DX[,c(4:6,14,15,17,18)]) #Calculate Summary Variable
 DX$goassessSmryNCvsDX<-ifelse(DX$goassessSmrySum == 0, 0, ifelse(DX$goassessSmrySum >= 1, 1, 9))
-DX[3:19] <- lapply(DX[3:19], factor)
+DX[3:20] <- lapply(DX[3:20], factor)
 
 ###################################################################
 ##### Prepare the Dimensions of Psychopathology Data from TP2 #####
