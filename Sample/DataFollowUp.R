@@ -51,7 +51,7 @@ MEDS[subject,4]<-MEDS[subject,4]<-0
 ##### Prepare the Data on Drug Use from the Urine Drug Screen #####
 ###################################################################
 
-DRUGS<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/GRMPYDataEntryInterv_DATA_2018-06-01_0118.csv")
+DRUGS<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/imglook_20180622.csv")
 DRUGS<-DRUGS[which(DRUGS$bblid %in% subs$bblid),]
 DRUGS<-DRUGS[,1:3] 
 DRUGS$drugscreen1<-recode(DRUGS$drugscreen1,"c('unk')=NA")
@@ -155,13 +155,16 @@ DX$dx_psychotic<-rowSums(DX[,c('dx_psychosis','dx_scz')]) #Merge Psychotic Disor
 DX$dx_psychotic[DX$dx_psychotic>=1] <- 1
 DX$dx_psychosis<-NULL
 DX$dx_scz<-NULL
-DX$dx_sub_abuse<-NULL
-DX$dx_sub_dep<-NULL
 DX$dx_Bipolar<-rowSums(DX[,c('dx_bp1','dx_bpoth')]) #Merge Bipolar Disorders
 DX$dx_Bipolar[DX$dx_Bipolar>=1] <- 1
 DX$dx_bp1<-NULL
 DX$dx_bpoth<-NULL
-DX$dx_Sum<-rowSums(DX[,c(7:10,13:14)]) #Calculate Summary Variable
+DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse')]) #Merge Bipolar Disorders
+DX$dx_OTHER[DX$dx_OTHER>=1] <- 1
+DX$dx_sub_abuse<-NULL
+DX$dx_sub_dep<-NULL
+
+DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)]) #Calculate Summary Variable
 DX$dx_NCvsDX<-ifelse(DX$dx_Sum == 0, 0, ifelse(DX$dx_Sum >= 1, 1, 9))
 
 ####################################################
@@ -177,7 +180,7 @@ rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
 rds <- merge(rds,DX,by=c("bblid"))
-rds<-rds[,c(1,17,2:16,18:45)]
+rds<-rds[,c(1,17,2:16,18:46)]
 
 #############################################################################
 ##### Conduct Factor Analysis to Compute General Psychopathology Scores #####
@@ -194,14 +197,14 @@ factor<-factanal(x=dimensions[,2:5], factors=1, rotation='varimax', scores="regr
 dimensions$Factor1<-factor$scores
 dimensions<-dimensions[,c(1,6)]
 rds<-merge(rds,dimensions, by=c('bblid'))
-names(rds)[46]<-'GenPsycho'
+names(rds)[47]<-'GenPsycho'
 
 #################################
 ##### Write Out New Dataset #####
 #################################
 
-rds[,c(4:6,13:18,20,32:45)] <- lapply(rds[,c(4:6,13:18,20,32:45)], as.factor)
-rds[,c(3,7:11,18,20:30,46)] <- lapply(rds[,c(3,7:11,18,20:30,46)], as.numeric)
+rds[,c(4:6,13:18,20,32:46)] <- lapply(rds[,c(4:6,13:18,20,32:46)], as.factor)
+rds[,c(3,7:11,18,20:30,47)] <- lapply(rds[,c(3,7:11,18,20:30,47)], as.numeric)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 
