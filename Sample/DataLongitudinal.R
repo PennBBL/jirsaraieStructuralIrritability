@@ -45,10 +45,10 @@ Combined$DeltaQA<-rowMeans(Combined[c('TP2_rating','TP1_averageManualRating')])
 Combined$DeltaT1Exclude<-Combined$TP2_t1Exclude
 
 Combined$DeltaDiagnosisGroup<-0
-Combined[which(Combined$TP1_goassessSmryNCvsDX ==0 & Combined$TP2_dx_NCvsDX ==0),98]<-1 #NC
-Combined[which(Combined$TP1_goassessSmryNCvsDX ==1 & Combined$TP2_dx_NCvsDX ==1),98]<-2 #DX
-Combined[which(Combined$TP1_goassessSmryNCvsDX ==1 & Combined$TP2_dx_NCvsDX ==0),98]<-3 #Resilient
-Combined[which(Combined$TP1_goassessSmryNCvsDX ==0 & Combined$TP2_dx_NCvsDX ==1),98]<-4 #Emergent
+Combined[which(Combined$TP1_goassessSmryNCvsDX ==0 & Combined$TP2_dx_NCvsDX ==0),100]<-1 #NC
+Combined[which(Combined$TP1_goassessSmryNCvsDX ==1 & Combined$TP2_dx_NCvsDX ==1),100]<-2 #DX
+Combined[which(Combined$TP1_goassessSmryNCvsDX ==1 & Combined$TP2_dx_NCvsDX ==0),100]<-3 #Resilient
+Combined[which(Combined$TP1_goassessSmryNCvsDX ==0 & Combined$TP2_dx_NCvsDX ==1),100]<-4 #Emergent
 Combined$DeltaDiagnosisGroup<-as.factor(Combined$DeltaDiagnosisGroup)
 
 #####################################
