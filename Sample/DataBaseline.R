@@ -77,11 +77,12 @@ DX$goassessSmryHal<-NULL
 DX$goassessSmryDel<-NULL
 DX$goassessSmryBul<-NULL
 DX$goassessSmryAno<-NULL
-DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryCon','goassessSmryOdd','goassessSmryEat')]) #Merge Bipolar Disorders
+DX$goassessSmryEat<-NULL
+DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryOdd','goassessSmryCon')]) #Merge Bipolar Disorders
 DX$goassessSmryOTHER[DX$goassessSmryOTHER>=1] <- 1
 DX$goassessSmryOdd<-NULL
 DX$goassessSmryCon<-NULL
-DX$goassessSmryEat<-NULL
+
 DX$goassessSmrySum<-rowSums(DX[,c(4:6,14,15,17,18)]) #Calculate Summary Variable
 DX$goassessSmryNCvsDX<-ifelse(DX$goassessSmrySum == 0, 0, ifelse(DX$goassessSmrySum >= 1, 1, 9))
 DX[3:20] <- lapply(DX[3:20], factor)
