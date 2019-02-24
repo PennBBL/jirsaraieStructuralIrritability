@@ -133,8 +133,10 @@ names(scared)[1]<-'bblid'
 bdi<-PSYCH[,c(grep('bdi_[0-9]', colnames(PSYCH)))]
 bdi<-cbind(PSYCH$bblid,bdi)
 bdi<-bdi[,c(1:23)]
-bdi$bdi_total<-rowSums(bdi[,2:23])
-bdi<-bdi[,-c(2:23)]
+bdi$bdi_19[bdi$bdi_19a==1] <- 0
+bdi$bdi_19a<-NULL
+bdi$bdi_total<-rowSums(bdi[,2:22])
+bdi<-bdi[,-c(2:22)]
 bdi$bdi_log<-log(bdi$bdi_total+1) 
 names(bdi)[1]<-'bblid'
 
