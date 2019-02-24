@@ -78,7 +78,7 @@ DX$goassessSmryDel<-NULL
 DX$goassessSmryBul<-NULL
 DX$goassessSmryAno<-NULL
 DX$goassessSmryEat<-NULL
-DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryOdd','goassessSmryCon')]) #Merge Bipolar Disorders
+DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryOdd','goassessSmryCon')])
 DX$goassessSmryOTHER[DX$goassessSmryOTHER>=1] <- 1
 DX$goassessSmryOdd<-NULL
 DX$goassessSmryCon<-NULL
