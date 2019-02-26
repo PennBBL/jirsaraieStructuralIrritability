@@ -28,7 +28,7 @@ subs <- read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies
 Irrit <- read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/baseline/n1601_goassess_112_itemwise_vars_20161214.csv")
 Irrit <- Irrit[(Irrit$bblid %in% subs$bblid),]
 Irrit <- Irrit[c("bblid","scanid","dep004","man007","odd001","odd006")]
-Irrit$IrritabilitySum<-apply(Irrit[,3:6],1,sum) 
+Irrit$IrritabilitySum<-apply(Irrit[,3:6],1,sum,na.rm=TRUE)
 Irrit$IrritabilityZ<-scale(Irrit$IrritabilitySum, center=TRUE, scale=TRUE)
 
 ###############################################
@@ -77,15 +77,24 @@ DX$goassessSmryHal<-NULL
 DX$goassessSmryDel<-NULL
 DX$goassessSmryBul<-NULL
 DX$goassessSmryAno<-NULL
-DX$goassessSmryEat<-NULL
-DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryOdd','goassessSmryCon')])
+
+DX$goassessSmryBeh<-NULL
+DX$goassessSmryMood<-NULL
+DX$goassessSmryGad<-NULL
+DX$goassessSmrySep<-NULL
+DX$goassessSmryPhb<-NULL
+DX$goassessSmrySoc<-NULL
+DX$goassessSmryPan<-NULL
+DX$goassessSmryAgr<-NULL
+DX$goassessSmryOcd<-NULL
+DX$goassessSmryOTHER<-rowSums(DX[,c('goassessSmryOdd','goassessSmryCon','goassessSmryEat')]) #Merge Bipolar Disorders
 DX$goassessSmryOTHER[DX$goassessSmryOTHER>=1] <- 1
 DX$goassessSmryOdd<-NULL
 DX$goassessSmryCon<-NULL
-
-DX$goassessSmrySum<-rowSums(DX[,c(4:6,14,15,17,18)]) #Calculate Summary Variable
+DX$goassessSmryEat<-NULL
+DX$goassessSmrySum<-rowSums(DX[,c(3:9)]) #Calculate Summary Variable
 DX$goassessSmryNCvsDX<-ifelse(DX$goassessSmrySum == 0, 0, ifelse(DX$goassessSmrySum >= 1, 1, 9))
-DX[3:20] <- lapply(DX[3:20], factor)
+DX[3:11] <- lapply(DX[3:11], factor)
 
 ###################################################################
 ##### Prepare the Dimensions of Psychopathology Data from TP2 #####
