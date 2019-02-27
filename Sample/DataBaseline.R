@@ -21,6 +21,8 @@
 
 subs <- read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/baseline/BBLids.csv")
 
+library(car)
+
 ########################################################################
 ##### Calculate the Dimesional Measure of Irritability at Baseline #####
 ########################################################################
@@ -204,6 +206,7 @@ rds$handednessv2<-as.factor(rds$handednessv2)
 rds$IrritabilitySum<-as.numeric(rds$IrritabilitySum)
 rds$IrritabilityZ<-as.numeric(rds$IrritabilityZ)
 rds$t1Exclude<-as.numeric(rds$t1Exclude)
+rds$DrugsExclusion<-as.factor(rds$DrugsExclusion)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/baseline/n140_Demo+Psych+DX+QA_20180531.rds")
 
