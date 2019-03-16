@@ -193,7 +193,7 @@ Irrit$IrritabilityBinary<-Irrit$IrritabilitySum
 Irrit$IrritabilityBinary[Irrit$IrritabilityBinary >= "1"] <- "1"
 Irrit$IrritabilityBinary<-as.factor(Irrit$IrritabilityBinary)
 Irrit<-Irrit[c('bblid','IrritabilityBinary')]
-names(Irrit$IrritabilityBinary)<-'Baseline_IrritabilityBinary'
+names(Irrit)[2]<-'Baseline_IrritabilityBinary'
 
 ####################################################
 ##### Merge the Prepared Spreadsheets Together #####
@@ -208,7 +208,7 @@ rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
 rds <- merge(rds,DX,by=c("bblid"))
-rds <- merge(rds,Irrit,by=c("bblid"), all=TRUE)
+rds <- merge(rds,Irrit,by=c("bblid"))
 rds<-rds[,c(1,17,2:16,18:47)]
 
 #################################
