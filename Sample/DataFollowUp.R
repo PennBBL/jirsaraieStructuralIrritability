@@ -146,11 +146,9 @@ names(bdi)[1]<-'bblid'
 
 DMDD<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/dmdd_proband_scales_redcap_20180803.csv")
 DMDD<-DMDD[which(DMDD$bblid %in% subs$bblid),]
-DMDD$dmdd_1_past
 DMDD<-subset(DMDD, select=c("bblid","dmdd_1_past"))
 DMDD[which(DMDD$dmdd_1_past <= 2),2]<-0
 DMDD[which(DMDD$dmdd_1_past == 3),2]<-1
-DMDD$dmdd_1_past<-as.numeric(DMDD$dmdd_1_past)
 
 DX<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/diagnosis_wsmryvars_20180731.csv")
 DX<-DX[which(DX$BBLID %in% subs$bblid),]
@@ -183,6 +181,20 @@ DX$dmdd_1_past<-NULL
 DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)]) #Calculate Summary Variable
 DX$dx_NCvsDX<-ifelse(DX$dx_Sum == 0, 0, ifelse(DX$dx_Sum >= 1, 1, 9))
 
+#######################################
+##### Merge Baseline Irritability #####
+#######################################
+
+Irrit<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/baseline/n1601_goassess_112_itemwise_vars_20161214.csv")
+Irrit<-Irrit[(Irrit$bblid %in% subs$bblid),]
+Irrit<-Irrit[c("bblid","scanid","dep004","man007","odd001","odd006")]
+Irrit$IrritabilitySum<-apply(Irrit[,3:6],1,sum,na.rm=TRUE)
+Irrit$IrritabilityBinary<-Irrit$IrritabilitySum
+Irrit$IrritabilityBinary[Irrit$IrritabilityBinary >= "1"] <- "1"
+Irrit$IrritabilityBinary<-as.factor(Irrit$IrritabilityBinary)
+Irrit<-Irrit[c('bblid','IrritabilityBinary')]
+names(Irrit$IrritabilityBinary)<-'Baseline_IrritabilityBinary'
+
 ####################################################
 ##### Merge the Prepared Spreadsheets Together #####
 ####################################################
@@ -196,31 +208,15 @@ rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
 rds <- merge(rds,DX,by=c("bblid"))
-rds<-rds[,c(1,17,2:16,18:46)]
-
-#############################################################################
-##### Conduct Factor Analysis to Compute General Psychopathology Scores #####
-#############################################################################
-
-dimensions<-rds[,c('bblid','ari_total','adhd_total','scared_total','bdi_total')]
-
-### Run PCA to Determine the Proportion of Shared Variance for a Single Factor
-dimensions.pca<-princomp(dimensions[,2:5])
-summary(dimensions.pca) # shared variance =0.79887
-
-### Execute Factor Analysis
-factor<-factanal(x=dimensions[,2:5], factors=1, rotation='varimax', scores="regression")
-dimensions$Factor1<-factor$scores
-dimensions<-dimensions[,c(1,6)]
-rds<-merge(rds,dimensions, by=c('bblid'))
-names(rds)[47]<-'GenPsycho'
+rds <- merge(rds,Irrit,by=c("bblid"), all=TRUE)
+rds<-rds[,c(1,17,2:16,18:47)]
 
 #################################
 ##### Write Out New Dataset #####
 #################################
 
-rds[,c(4:6,13:18,20,32:46)] <- lapply(rds[,c(4:6,13:18,20,32:46)], as.factor)
-rds[,c(3,7:11,18,20:30,47)] <- lapply(rds[,c(3,7:11,18,20:30,47)], as.numeric)
+rds[,c(4:6,13:18,20,32:47)] <- lapply(rds[,c(4:6,13:18,20,32:47)], as.factor)
+rds[,c(3,7:11,18,20:30)] <- lapply(rds[,c(3,7:11,18,20:30)], as.numeric)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 
