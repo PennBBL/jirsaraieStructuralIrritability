@@ -31,7 +31,9 @@ Irrit <- read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopie
 Irrit <- Irrit[(Irrit$bblid %in% subs$bblid),]
 Irrit <- Irrit[c("bblid","scanid","dep004","man007","odd001","odd006")]
 Irrit$IrritabilitySum<-apply(Irrit[,3:6],1,sum,na.rm=TRUE)
-Irrit$IrritabilityZ<-scale(Irrit$IrritabilitySum, center=TRUE, scale=TRUE)
+Irrit$IrritabilityBinary<-Irrit$IrritabilitySum
+Irrit$IrritabilityBinary[Irrit$IrritabilityBinary >= "1"] <- "1"
+Irrit$IrritabilityBinary<-as.factor(Irrit$IrritabilityBinary)
 
 ###############################################
 ##### Prepare the Demographic Spreadsheet #####
@@ -204,9 +206,7 @@ rds$race2<-as.factor(rds$race2)
 rds$ageAtScan1<-as.numeric(rds$ageAtScan1)
 rds$handednessv2<-as.factor(rds$handednessv2)
 rds$IrritabilitySum<-as.numeric(rds$IrritabilitySum)
-rds$IrritabilityZ<-as.numeric(rds$IrritabilityZ)
 rds$t1Exclude<-as.numeric(rds$t1Exclude)
-rds$DrugsExclusion<-as.factor(rds$DrugsExclusion)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/baseline/n140_Demo+Psych+DX+QA_20180531.rds")
 
