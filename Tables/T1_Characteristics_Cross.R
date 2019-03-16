@@ -21,10 +21,14 @@ library(lsr)
 ### Create Datasets Seperated by Diagnosis Groups ###
 #####################################################
 
-NC <- rds[which(rds$TP1_goassessSmryNCvsDX==0),]
+NC <- rds[which(rds$TP1_IrritabilitySum==0),]
 dim(NC)
-DX <- rds[which(rds$TP1_goassessSmryNCvsDX==1),]
+DX <- rds[which(rds$TP1_IrritabilitySum>=1),]
 dim(DX)
+
+rds$TP1_IrritabilityGrp<-9999
+rds[,c('TP1_IrritabilityGrp')]<-ifelse(rds[,c('TP1_IrritabilitySum')] == 0, 0, ifelse(rds[,c('TP1_IrritabilitySum')] >= 1, 1, 999))
+rds$TP1_IrritabilityGrp<-as.factor(rds$TP1_IrritabilityGrp)
 
 ###########################################
 ### Aanlyze Differences in Baseline Age ###
@@ -35,8 +39,7 @@ sd(NC$TP1_ageAtScan1)
 summary(DX$TP1_ageAtScan1)
 sd(DX$TP1_ageAtScan1)
 
-summary(aov(rds$TP1_ageAtScan1~rds$TP1_goassessSmryNCvsDX)) #0.009
-cohen.d(rds$TP1_ageAtScan1, rds$TP1_goassessSmryNCvsDX, paired=FALSE) #0.45
+t.test(rds$TP1_ageAtScan1~rds$TP1_IrritabilityGrp)
 
 ############################################
 ### Aanlyze Differences in Follow Up Age ###
@@ -47,8 +50,7 @@ sd(NC$TP2_ScanAgeYears)
 summary(DX$TP2_ScanAgeYears)
 sd(DX$TP2_ScanAgeYears)
 
-summary(aov(rds$TP2_ScanAgeYears~rds$TP1_goassessSmryNCvsDX)) #0.006
-cohen.d(rds$TP2_ScanAgeYears, rds$TP1_goassessSmryNCvsDX, paired=FALSE) #0.47
+t.test(rds$TP2_ScanAgeYears~rds$TP1_IrritabilityGrp)
 
 ############################################
 ### Aanlyze Differences in Sex per Group ###
@@ -57,7 +59,7 @@ cohen.d(rds$TP2_ScanAgeYears, rds$TP1_goassessSmryNCvsDX, paired=FALSE) #0.47
 summary(NC$TP2_sex)
 summary(DX$TP2_sex)
 
-chisq.test(table(rds$TP1_goassessSmryNCvsDX,rds$TP2_sex)) #0.83
+chisq.test(table(rds$TP1_IrritabilityGrp,rds$TP2_sex))
 
 ###############################################
 ### Aanlyze Differences in Father Education ###
@@ -68,8 +70,7 @@ sd(NC$TP2_dad_educ, na.rm=TRUE)
 summary(DX$TP2_dad_educ)
 sd(DX$TP2_dad_educ, na.rm=TRUE)
 
-summary(aov(rds$TP2_dad_educ~rds$TP1_goassessSmryNCvsDX)) #0.13
-cohen.d(rds$TP2_dad_educ, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.28
+t.test(rds$TP2_dad_educ~rds$TP1_IrritabilityGrp)
 
 ###############################################
 ### Aanlyze Differences in Mother Education ###
@@ -80,8 +81,7 @@ sd(NC$TP2_mom_educ, na.rm=TRUE)
 summary(DX$TP2_mom_educ)
 sd(DX$TP2_mom_educ, na.rm=TRUE)
 
-summary(aov(rds$TP2_mom_educ~rds$TP1_goassessSmryNCvsDX)) #0.01
-cohen.d(rds$TP2_mom_edu, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE)  #0.043
+t.test(rds$TP2_mom_educ~rds$TP1_IrritabilityGrp)
 
 #####################################################
 ### Aanlyze Differences in Follow-up Irritability ###
@@ -92,8 +92,7 @@ sd(NC$TP2_ari_total, na.rm=TRUE)
 summary(DX$TP2_ari_total)
 sd(DX$TP2_ari_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_ari_log~rds$TP1_goassessSmryNCvsDX)) #0.04
-cohen.d(rds$TP2_ari_log, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.38
+t.test(rds$TP2_ari_total~rds$TP1_IrritabilityGrp)
 
 ###################################################
 ### Aanlyze Differences in Follow-up Depression ###
@@ -104,8 +103,7 @@ sd(NC$TP2_bdi_total, na.rm=TRUE)
 summary(DX$TP2_bdi_total)
 sd(DX$TP2_bdi_total, na.rm=TRUE)
 
-t.test(rds$TP2_bdi_total~rds$TP1_goassessSmryNCvsDX) #0.11
-cohen.d(rds$TP2_bdi_total, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE)  #0.29
+t.test(rds$TP2_bdi_total~rds$TP1_IrritabilityGrp)
 
 #####################################################
 ### Aanlyze Differences in Followup ADHD Symptoms ###
@@ -116,8 +114,7 @@ sd(NC$TP2_adhd_total, na.rm=TRUE)
 summary(DX$TP2_adhd_total)
 sd(DX$TP2_adhd_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_adhd_total~rds$TP1_goassessSmryNCvsDX)) #0.004
-cohen.d(rds$TP2_adhd_total, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.62
+t.test(rds$TP2_adhd_total~rds$TP1_IrritabilityGrp)
 
 ########################################################
 ### Aanlyze Differences in Followup Anxiety Symptoms ###
@@ -128,19 +125,31 @@ sd(NC$TP2_scared_total, na.rm=TRUE)
 summary(DX$TP2_scared_total)
 sd(DX$TP2_scared_total, na.rm=TRUE)
 
-summary(aov(rds$TP2_scared_total~rds$TP1_goassessSmryNCvsDX)) #0.003
-cohen.d(rds$TP2_scared_total, rds$TP1_goassessSmryNCvsDX, paired=FALSE, na.rm=TRUE) #0.64
+t.test(rds$TP2_scared_total~rds$TP1_IrritabilityGrp)
 
-############################################
-### Aanlyze Differences in Sex per Group ###
-############################################
+########################################################
+### Aanlyze Differences in Baseline Diagnosis Status ###
+########################################################
 
-summary(NC$TP2_dx_NCvsDX)
-34/48
-summary(DX$TP2_dx_NCvsDX)
-44/89
+Diagnosed<-length(which(NC$TP1_goassessSmryNCvsDX==1))
+Diagnosed/dim(NC)[1]
 
-chisq.test(table(rds$TP1_goassessSmryNCvsDX,rds$TP2_dx_NCvsDX)) #0.83
+Diagnosed<-length(which(DX$TP1_goassessSmryNCvsDX==1))
+Diagnosed/dim(DX)[1]
+
+chisq.test(table(rds$TP1_IrritabilityGrp,rds$TP1_goassessSmryNCvsDX))
+
+#########################################################
+### Aanlyze Differences in Follow-up Diagnosis Status ###
+#########################################################
+
+Diagnosed<-length(which(NC$TP2_dx_NCvsDX==1))
+Diagnosed/dim(NC)[1]
+
+Diagnosed<-length(which(DX$TP2_dx_NCvsDX==1))
+Diagnosed/dim(DX)[1]
+
+chisq.test(table(rds$TP1_IrritabilityGrp,rds$TP2_dx_NCvsDX))
 
 ###################################################################################################
 #####  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  #####
