@@ -178,7 +178,7 @@ DX$dx_OTHER[DX$dx_OTHER>=1] <- 1
 DX$dx_sub_abuse<-NULL
 DX$dx_sub_dep<-NULL
 DX$dmdd_1_past<-NULL
-DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)]) #Calculate Summary Variable
+DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)], na.rm=TRUE) #Calculate Summary Variable
 DX$dx_NCvsDX<-ifelse(DX$dx_Sum == 0, 0, ifelse(DX$dx_Sum >= 1, 1, 9))
 
 #######################################
