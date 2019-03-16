@@ -144,10 +144,19 @@ names(bdi)[1]<-'bblid'
 ##### Prepare the Diagnosis Data at Follow-up #####
 ###################################################
 
+DMDD<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/dmdd_proband_scales_redcap_20180803.csv")
+DMDD<-DMDD[which(DMDD$bblid %in% subs$bblid),]
+DMDD$dmdd_1_past
+DMDD<-subset(DMDD, select=c("bblid","dmdd_1_past"))
+DMDD[which(DMDD$dmdd_1_past <= 2),2]<-0
+DMDD[which(DMDD$dmdd_1_past == 3),2]<-1
+DMDD$dmdd_1_past<-as.numeric(DMDD$dmdd_1_past)
+
 DX<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/diagnosis_wsmryvars_20180731.csv")
 DX<-DX[which(DX$BBLID %in% subs$bblid),]
 DX<-DX[,c(1,24:27,98:120)]
 names(DX)[1]<-'bblid'
+DX<- merge(DX,DMDD, by=c("bblid"), all=TRUE)
 DX$dx_prodromal<-NULL #Remove Extra Diagnoses
 DX$dx_prodromal_remit<-NULL
 DX$dx_sub_dep_can<-NULL
@@ -166,11 +175,11 @@ DX$dx_Bipolar<-rowSums(DX[,c('dx_bp1','dx_bpoth')]) #Merge Bipolar Disorders
 DX$dx_Bipolar[DX$dx_Bipolar>=1] <- 1
 DX$dx_bp1<-NULL
 DX$dx_bpoth<-NULL
-DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse')]) #Merge Bipolar Disorders
+DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse','dmdd_1_past')]) #Merge Other Disorders
 DX$dx_OTHER[DX$dx_OTHER>=1] <- 1
 DX$dx_sub_abuse<-NULL
 DX$dx_sub_dep<-NULL
-
+DX$dmdd_1_past<-NULL
 DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)]) #Calculate Summary Variable
 DX$dx_NCvsDX<-ifelse(DX$dx_Sum == 0, 0, ifelse(DX$dx_Sum >= 1, 1, 9))
 
