@@ -146,9 +146,8 @@ names(bdi)[1]<-'bblid'
 
 DMDD<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/dmdd_proband_scales_redcap_20180803.csv")
 DMDD<-DMDD[which(DMDD$bblid %in% subs$bblid),]
-DMDD<-subset(DMDD, select=c("bblid","dmdd_1_past"))
-DMDD[which(DMDD$dmdd_1_past <= 2),2]<-0
-DMDD[which(DMDD$dmdd_1_past == 3),2]<-1
+DMDD<-subset(DMDD, select=c("bblid","dmdd_dx_past"))
+DMDD$dmdd_dx_past<-recode(DMDD$dmdd_dx_past,"1=0; 2=1")
 
 DX<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/diagnosis_wsmryvars_20180731.csv")
 DX<-DX[which(DX$BBLID %in% subs$bblid),]
@@ -173,7 +172,7 @@ DX$dx_Bipolar<-rowSums(DX[,c('dx_bp1','dx_bpoth')]) #Merge Bipolar Disorders
 DX$dx_Bipolar[DX$dx_Bipolar>=1] <- 1
 DX$dx_bp1<-NULL
 DX$dx_bpoth<-NULL
-DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse','dmdd_1_past')]) #Merge Other Disorders
+DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse','dmdd_dx_past'),], na.rm=TRUE) #Merge Other Disorders
 DX$dx_OTHER[DX$dx_OTHER>=1] <- 1
 DX$dx_sub_abuse<-NULL
 DX$dx_sub_dep<-NULL
@@ -192,8 +191,8 @@ Irrit$IrritabilitySum<-apply(Irrit[,3:6],1,sum,na.rm=TRUE)
 Irrit$IrritabilityBinary<-Irrit$IrritabilitySum
 Irrit$IrritabilityBinary[Irrit$IrritabilityBinary >= "1"] <- "1"
 Irrit$IrritabilityBinary<-as.factor(Irrit$IrritabilityBinary)
-Irrit<-Irrit[c('bblid','IrritabilityBinary')]
-names(Irrit)[2]<-'Baseline_IrritabilityBinary'
+Irrit<-Irrit[c('bblid','IrritabilitySum')]
+names(Irrit)[2]<-'Baseline_IrritabilitySum'
 
 ####################################################
 ##### Merge the Prepared Spreadsheets Together #####
@@ -201,22 +200,23 @@ names(Irrit)[2]<-'Baseline_IrritabilityBinary'
 
 rds <- merge(DEMO,MEDS,by=c("bblid"))
 rds <- merge(rds,DRUGS,by=c("bblid"))
-rds <- merge(rds,QA,by=c("bblid"))
 rds <- merge(rds,ari,by=c("bblid"))
 rds <- merge(rds,swan,by=c("bblid"))
 rds <- merge(rds,ace,by=c("bblid"))
 rds <- merge(rds,scared,by=c("bblid"))
 rds <- merge(rds,bdi,by=c("bblid"))
+rds <- merge(rds,Irrit,by=c("bblid"), all=TRUE)
 rds <- merge(rds,DX,by=c("bblid"))
-rds <- merge(rds,Irrit,by=c("bblid"))
-rds<-rds[,c(1,17,2:16,18:47)]
+rds <- merge(rds,QA,by=c("bblid"))
+
+rds<-rds[,c(1,46,2:45,47:48)]
 
 #################################
 ##### Write Out New Dataset #####
 #################################
 
-rds[,c(4:6,13:18,20,32:47)] <- lapply(rds[,c(4:6,13:18,20,32:47)], as.factor)
-rds[,c(3,7:11,18,20:30)] <- lapply(rds[,c(3,7:11,18,20:30)], as.numeric)
+rds[,c(4:6,12:15,17,34:44,46,48)] <- lapply(rds[,c(4:6,12:15,17,34:44,46,48)], as.factor)
+rds[,c(3,7:11,18:29,45,47)] <- lapply(rds[,c(3,7:11,18:29,45,47)], as.numeric)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 
