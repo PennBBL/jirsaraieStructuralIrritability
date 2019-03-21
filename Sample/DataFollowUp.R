@@ -148,6 +148,7 @@ DMDD<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/f
 DMDD<-DMDD[which(DMDD$bblid %in% subs$bblid),]
 DMDD<-subset(DMDD, select=c("bblid","dmdd_dx_past"))
 DMDD$dmdd_dx_past<-recode(DMDD$dmdd_dx_past,"1=0; 2=1")
+names(DMDD)[2]<-'dx_dmdd_past'
 
 DX<-read.csv("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/rawCopies/follow-up/diagnosis_wsmryvars_20180731.csv")
 DX<-DX[which(DX$BBLID %in% subs$bblid),]
@@ -172,11 +173,11 @@ DX$dx_Bipolar<-rowSums(DX[,c('dx_bp1','dx_bpoth')]) #Merge Bipolar Disorders
 DX$dx_Bipolar[DX$dx_Bipolar>=1] <- 1
 DX$dx_bp1<-NULL
 DX$dx_bpoth<-NULL
-DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse','dmdd_dx_past'),], na.rm=TRUE) #Merge Other Disorders
+DX$dx_OTHER<-rowSums(DX[,c('dx_sub_dep','dx_sub_abuse','dx_dmdd_past'),], na.rm=TRUE) #Merge Other Disorders
 DX$dx_OTHER[DX$dx_OTHER>=1] <- 1
 DX$dx_sub_abuse<-NULL
 DX$dx_sub_dep<-NULL
-DX$dmdd_1_past<-NULL
+DX$dx_dmdd_past<-NULL
 DX$dx_Sum<-rowSums(DX[,c(7:10,13:15)], na.rm=TRUE) #Calculate Summary Variable
 DX$dx_NCvsDX<-ifelse(DX$dx_Sum == 0, 0, ifelse(DX$dx_Sum >= 1, 1, 9))
 
@@ -209,14 +210,14 @@ rds <- merge(rds,Irrit,by=c("bblid"), all=TRUE)
 rds <- merge(rds,DX,by=c("bblid"))
 rds <- merge(rds,QA,by=c("bblid"))
 
-rds<-rds[,c(1,46,2:45,47:48)]
+rds<-rds[,c(1,45,2:44,46:47)]
 
 #################################
 ##### Write Out New Dataset #####
 #################################
 
-rds[,c(4:6,12:15,17,34:44,46,48)] <- lapply(rds[,c(4:6,12:15,17,34:44,46,48)], as.factor)
-rds[,c(3,7:11,18:29,45,47)] <- lapply(rds[,c(3,7:11,18:29,45,47)], as.numeric)
+rds[,c(4:6,12:15,17,34:45,47)] <- lapply(rds[,c(4:6,12:15,17,34:45,47)], as.factor)
+rds[,c(3,7:11,18:29,46)] <- lapply(rds[,c(3,7:11,18:29,46)], as.numeric)
 
 saveRDS(rds, "/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/follow-up/n141_Demo+Psych+DX+QA_20180724.rds")
 
