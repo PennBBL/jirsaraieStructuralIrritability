@@ -72,7 +72,6 @@ covaData <- covaData[subset, ] #subset data
 print("Loading input dataset")
 subjID <- unlist(strsplit(subjID, ","))
 inputData <- read.csv(inputPath)
-inputData$X<-NULL
 inputData$scanid<-NULL
 dataSubj <- merge(covaData, inputData, by=subjID)
 
