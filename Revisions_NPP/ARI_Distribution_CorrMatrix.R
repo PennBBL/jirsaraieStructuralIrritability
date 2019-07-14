@@ -1,4 +1,9 @@
 ###################################################################################################
+##########################   GRMPY - Histograms and Correlation Plots    #########################
+##########################               Robert Jirsaraie                ##########################
+##########################        rjirsara@pennmedicine.upenn.edu        ##########################
+##########################                 07/13/2019                    ##########################
+###################################################################################################
 #####  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  #####
 ###################################################################################################
 
@@ -6,7 +11,7 @@
 ##### Load Packages and Data #####
 ##################################
 
-rds<-readRDS("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Demo+Psych+DX+QA+FD_20190704.rds")
+rds<-readRDS("/data/jux/BBL/projects/jirsaraieStructuralIrrit/data/processedData/longitudinal/n137_Demo+Psych+DX+QA+PRIME_20190713.rds")
 library(ggplot2)
 
 ############################################################
@@ -28,6 +33,19 @@ p1<-hist(rds$TP2_ari_total)
 p2<-hist(rds$TP2_ari_log)
 plot( p1, col=rgb(0.0,0.5,1.0,0.3), xlim=c(0,12))
 plot(p2, col=rgb(0.0,0.3,0.7,0.3), xlim=c(0,12), add=T)
+
+#######################################################
+##### Load Software and Create Correlations Plots #####
+#######################################################
+
+install.packages("corrplot")
+library(corrplot)
+
+PSYCHO<-rds[,c(58,65,61,67,93)]
+names(PSYCHO)<-c("ARI","SCARED","ADHD","BDI","PSY")
+
+Matrix<-cor(PSYCHO, use="pairwise.complete.obs")
+corrplot.mixed(Matrix, lower.col = "black", number.cex = 1.75)
 
 ###################################################################################################
 #####  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  ⚡  #####
